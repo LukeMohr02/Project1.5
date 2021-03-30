@@ -1,4 +1,4 @@
-package com.project1.dao;
+package com.MohrShaji.dao;
 
 import java.util.List;
 

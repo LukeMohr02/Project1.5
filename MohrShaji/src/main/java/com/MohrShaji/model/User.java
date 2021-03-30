@@ -1,12 +1,24 @@
-package com.project1.model;
+package com.MohrShaji.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "hibernateuser")
 public class User {
+	@Id @GeneratedValue
+	@Column(name = "id")
 	private int user_id;
+	@Column(name = "username")
 	private String username;
+	@Column(name = "password")
 	private String password;
+	@Column(name = "first_name")
 	private String firstname;
+	@Column(name = "last_name")
 	private String lastname;
+	@Column(name = "email")
 	private String email;
+	@Column(name = "role_id")
 	private int role_id;
 	
 	public User() {

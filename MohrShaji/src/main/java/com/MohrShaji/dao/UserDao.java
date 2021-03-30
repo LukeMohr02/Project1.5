@@ -1,4 +1,4 @@
-package com.project1.dao;
+package com.MohrShaji.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,18 +6,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.project1.model.User;
-import com.project1.util.ConnectionUtil;
+import com.MohrShaji.model.User;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
 
 /*
  * Purpose of this Dao is to send/retrieve info about a reimbursement
  * to/from the database. It then returns the composed Reimbursement Object.
  */
 public class UserDao implements GenericDao <User> {
+	private static SessionFactory factory;
 	private static final Logger LOGGER = Logger.getLogger(UserDao.class);
 
 	private User objectConstructor(ResultSet rs) throws SQLException {
@@ -27,43 +33,33 @@ public class UserDao implements GenericDao <User> {
 	
 	@Override
 	public List<User> getList() {
-		List<User> l = new ArrayList<User>();
-		
-		try (Connection c = ConnectionUtil.getInstance().getConnection()) {
-			String qSql = "SELECT * FROM ers_users";
-			Statement s = c.createStatement();
-			ResultSet rs = s.executeQuery(qSql);
-			
-			while(rs.next()) {
-				l.add(objectConstructor(rs));
+		Session session = factory.openSession();
+		Transaction tx = null;
+
+
+		try{
+			tx = session.beginTransaction();
+			List users = session.createQuery("from hibernateuser").list();
+			for (Iterator iterator = users.iterator();
+				 iterator.hasNext();){
+				User user = (User) iterator.next();
+				System.out.println("First name: " + user.getFirstname());
+				System.out.println("Last name: " + user.getLastname());
 			}
-			LOGGER.debug("A list of users was retrieved from the database.");
-		} catch (SQLException e) {
+			tx.commit();
+		}catch (HibernateException e){
+			if (tx!=null) tx.rollback();
 			e.printStackTrace();
-			LOGGER.error("An attempt to get all users from the database failed.");
+		} finally {
+			session.close();
 		}
-		return l;
+		return null;
 	}
 
 	@Override
 	public User getById(int id) {
-		User u = null;
-		
-		try(Connection c = ConnectionUtil.getInstance().getConnection()) {
-			String qSql = "SELECT * FROM ers_users WHERE ers_users_id = ?";
-			PreparedStatement ps = c.prepareStatement(qSql);
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
-			
-			if(rs.next())
-				u = objectConstructor(rs);
-			
-			LOGGER.debug("Information about user ID " + id + " was retrieved from the database.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			LOGGER.error("An attempt to get info about user ID " + id + " from the database failed.");
-		}
-		return u;
+
+		return null;
 	}
 	
 	@Override
@@ -74,36 +70,45 @@ public class UserDao implements GenericDao <User> {
 	
 	@Override
 	public User getByUsername(String username) {
-		User u = null;
-		
-		try(Connection c = ConnectionUtil.getInstance().getConnection()) {
-			String qSql = "SELECT * FROM ers_users WHERE ers_username = ?";
-			PreparedStatement ps = c.prepareStatement(qSql);
-			ps.setString(1, username.toLowerCase());
-			ResultSet rs = ps.executeQuery();
-			
-			if(rs.next()) {
-				//System.out.println("User object was created!");
-				u = objectConstructor(rs);
-			}
-			
-			LOGGER.debug("Information about username " + username + " was retrieved from the database.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			LOGGER.error("An attempt to get info about username " + username + " from the database failed.");
-		}
-		return u;
+
+		return null;
 	}
 
 	@Override
 	public void insert(User t) {
-		// TODO Auto-generated method stub
-		
+		Session session = factory.openSession();
+		Transaction tx = null;
+		Integer userID = null;
+
+		try {
+			tx = session.beginTransaction();
+			User user = new User();
+			userID = (Integer) session.save(user);
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
 	}
 
 	@Override
 	public void delete(User t) {
-		// TODO Auto-generated method stub
+		Session session = factory.openSession();
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			//User user = (User) session.get(User.class,0);
+			session.delete(t);
+			tx.commit();
+		}catch (HibernateException e){
+			if(tx!=null)tx.rollback();
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
 		
 	}
 }

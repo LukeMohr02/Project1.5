@@ -1,5 +1,5 @@
-package com.project1.dao;
-
+/*
+package com.MohrShaji.dao;
 import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -15,13 +15,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.project1.model.Reimbursement;
-import com.project1.util.ConnectionUtil;
+import com.MohrShaji.model.Reimbursement;
 
+
+*/
 /*
  * Purpose of this Dao is to send/retrieve info about a reimbursement
  * to/from the database. It then returns the composed Reimbursement Object.
- */
+ *//*
+
 public class ReimbursementDao implements GenericDao<Reimbursement> {
 	private static final Logger LOGGER = Logger.getLogger(ReimbursementDao.class);
 	
@@ -177,3 +179,4 @@ public class ReimbursementDao implements GenericDao<Reimbursement> {
 	}
 	
 }
+*/
