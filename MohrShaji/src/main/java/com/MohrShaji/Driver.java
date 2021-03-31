@@ -12,7 +12,7 @@ public class Driver {
 
        /*  mu.createUser(24,"noel","pasword","nshaj","shaji","nshaji916@gmail.com",1);
         mu.listUsers();*/
-       mu.listUsers();
+        mu.listUsers();
       //  mu.deleteUser(24);
     }
 }

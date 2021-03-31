@@ -36,7 +36,7 @@
 
 <!--    <servlet>-->
 <!--        <servlet-name>default</servlet-name>-->
-<!--        <servlet-class>com.MohrShaji.com.MohrShaji.servlet.Servlet</servlet-class>-->
+<!--        <servlet-class>com.MohrShaji.com.MohrShaji.servlet.UserListServlettServlet</servlet-class>-->
 <!--        <load-on-startup>0</load-on-startup>-->
 <!--    </servlet>-->
 

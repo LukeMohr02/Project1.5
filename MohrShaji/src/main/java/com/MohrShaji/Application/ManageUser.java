@@ -29,7 +29,11 @@ public class ManageUser {
 
     }
 
-    public void createUser(int user_id, String username, String password, String firstname, String lastname, String email, int role_id) {
+    public User createUser(String username, String password, String firstname, String lastname, String email, int role_id) {
+        return createUser(0, username, password, firstname, lastname, email, role_id);
+    }
+
+    public User createUser(int user_id, String username, String password, String firstname, String lastname, String email, int role_id) {
 
 
         Session session = factory.openSession();
@@ -49,7 +53,7 @@ public class ManageUser {
         t.commit();
         System.out.println("Saved Entity");
         session.close();
-
+        return user;
 /*
         try {
             tx = session.beginTransaction();
@@ -72,24 +76,25 @@ public class ManageUser {
     }
 
 
-    public void listUsers() {
+    public List<User> listUsers() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 
 
         tx = session.beginTransaction();
         List users = session.createQuery("from User").list();
-        for (Iterator iterator = users.iterator();
-             iterator.hasNext(); ) {
-            User user = (User) iterator.next();
-            System.out.println("First name: " + user.getFirstname());
-            System.out.println("Last name: " + user.getLastname());
-        }
+//        for (Iterator iterator = users.iterator();
+//             iterator.hasNext(); ) {
+//            User user = (User) iterator.next();
+//            System.out.println("First name: " + user.getFirstname());
+//            System.out.println("Last name: " + user.getLastname());
+//        }
         tx.commit();
 
 
         session.close();
 
+        return users;
     }
 
     public void updateUser(Integer userID, String username) {
