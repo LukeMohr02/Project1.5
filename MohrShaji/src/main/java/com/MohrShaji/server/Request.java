@@ -6,6 +6,7 @@ import java.io.*;
 import java.security.Principal;
 import java.util.*;
 
+@Deprecated
 public class Request implements HttpServletRequest {
 
     private BufferedReader in;
