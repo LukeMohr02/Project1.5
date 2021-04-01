@@ -6,50 +6,98 @@ import java.util.List;
 import java.util.Date;
 import java.util.Iterator;
 
+import com.MohrShaji.Util.HibernateUtil;
 import com.MohrShaji.model.Reimbursement;
 import com.MohrShaji.model.User;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 
 public class ReimbursmentManager {
-    private static SessionFactory factory;
+    static StandardServiceRegistry ssr = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+    static Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
+    static SessionFactory factory = meta.getSessionFactoryBuilder().build();
 
     public static void main(String[] args) {
 
-        try {
-            factory = new Configuration().configure().addAnnotatedClass(Reimbursement.class).buildSessionFactory();
-        } catch (Throwable t) {
-            System.err.println("Error! Could not create Session Factory" + t);
-            throw new ExceptionInInitializerError(t);
-        }
+    }
 
-        ReimbursmentManager rm = new ReimbursmentManager();
+
+    public void createReimbursment(int id, float amount, Timestamp submitted, Timestamp resolved, String description, int author,
+                                   int resolver, int status_id, int type_id) {
+        Session session = factory.openSession();
+        Transaction tx = session.beginTransaction();
+
+
+        Reimbursement reimbursement = new Reimbursement();
+        reimbursement.setId(id);
+        reimbursement.setAmount(amount);
+        reimbursement.setSubmitted(submitted);
+        reimbursement.setResolved(resolved);
+        reimbursement.setDescription(description);
+        reimbursement.setAuthor(author);
+        reimbursement.setResolver(resolver);
+        reimbursement.setStatus_id(status_id);
+        reimbursement.setType_id(type_id);
+        session.save(reimbursement);
+        tx.commit();
+        System.out.println("Reimbursement saved");
+        session.close();
 
 
     }
 
-    public Integer createReimbursment(int id, float amount, Timestamp submitted, Timestamp resolved, String description, int author ,
-                                      int resolver, int status_id, int type_id) {
-        Session session = factory.openSession();
+
+    public void listReimbursment() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
-        Integer userID = null;
+
+
+        tx = session.beginTransaction();
+        List reimbursement = session.createQuery("from Reimbursement").list();
+        for (Iterator iterator = reimbursement.iterator();
+             iterator.hasNext(); ) {
+            Reimbursement re = (Reimbursement) iterator.next();
+            System.out.println("Reimbursement ID: " + re.getId());
+            System.out.println("Amount: " + re.getAmount());
+        }
+        tx.commit();
+
+
+        session.close();
+
+    }
+
+    public void updateReimbursement(Integer id, int amount) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
 
         try {
             tx = session.beginTransaction();
-            Reimbursement reimbursement = new Reimbursement();
+            Reimbursement reimbursement = (Reimbursement) session.get(Reimbursement.class, id);
             reimbursement.setAmount(amount);
-            reimbursement.setSubmitted(submitted);
-            reimbursement.setResolved(resolved);
-            reimbursement.setDescription(description);
-            reimbursement.setAuthor(author);
-            reimbursement.setResolver(resolver);
-            reimbursement.setStatus_id(status_id);
-            reimbursement.setType_id(type_id);
-            id = (Integer) session.save(reimbursement);
+            session.update(reimbursement);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+        } finally {
+            session.close();
+        }
+    }
+
+
+    public void deleteReimbursement(Integer id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            Reimbursement reimbursement = (Reimbursement) session.get(Reimbursement.class, id);
+            session.delete(reimbursement);
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
@@ -57,70 +105,46 @@ public class ReimbursmentManager {
         } finally {
             session.close();
         }
-        return userID;
+
     }
 
-
-/*
-    public void listReimbursment(){
-        Session session = factory.openSession();
-        Transaction tx = null;
-
-
-        try{
-            tx = session.beginTransaction();
-            List users = session.createQuery("from employee").list();
-            for (Iterator iterator = users.iterator();
-                 iterator.hasNext();){
-                User user = (User) iterator.next();
-                System.out.println("First name: " + user.getFirstname());
-                System.out.println("Last name: " + user.getLastname());
-            }
-            tx.commit();
-        }catch (HibernateException e){
-            if (tx!=null) tx.rollback();
+    public Reimbursement getById(int id) {
+        Session session = null;
+        Reimbursement reimbursement = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            reimbursement = session.get(Reimbursement.class, id);
+            Hibernate.initialize(reimbursement);
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            session.close();
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
+        System.out.println(reimbursement);
+        return reimbursement;
+
     }
 
-    public void updateReimbursement(Integer userID,String username){
-        Session session = factory.openSession();
+
+    public void getByUserId(int author) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 
-        try {
-            tx = session.beginTransaction();
-            User user = (User)session.get(User.class,userID);
-            user.setUsername(username);
-            session.update(user);
-            tx.commit();
-        }catch (HibernateException e){
-            if(tx!=null)tx.rollback();
-        }finally {
-            session.close();
+
+        tx = session.beginTransaction();
+        List reimbursement = session.createQuery("from Reimbursement where author = :author").setParameter("author",author).list();
+
+        for (Iterator iterator = reimbursement.iterator();
+             iterator.hasNext(); ) {
+            Reimbursement re = (Reimbursement) iterator.next();
+            System.out.println("Reimbursement ID: " + re.getId());
+            System.out.println("Amount: " + re.getAmount());
         }
+        tx.commit();
+
+
+        session.close();
     }
-
-
-
-    public void deleteReimbursement(Integer userID){
-        Session session = factory.openSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            User user = (User) session.get(User.class,userID);
-            session.delete(user);
-            tx.commit();
-        }catch (HibernateException e){
-            if(tx!=null)tx.rollback();
-            e.printStackTrace();
-        }finally {
-            session.close();
-        }
-
-    }
-*/
-
 }
