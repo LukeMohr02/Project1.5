@@ -69,4 +69,33 @@ public class UserController {
     public void updateUser() {
 
     }
+
+    public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int userId = Integer.parseInt(request.getParameter("id"));
+
+        response.getWriter().println("Created new user:\n\n" +
+                new Gson().toJson(
+                mu.deleteUser(userId)));
+    }
+
+    public void getUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String userId = request.getParameter("id");
+
+        if (userId != null) {
+            try {
+                int userIdInt = Integer.parseInt(userId);
+
+                //TODO: get user by id here
+                System.out.println(userIdInt);
+            } catch (NumberFormatException e) {
+                response.getWriter().write("Invalid 'id' input, please enter an integer.");
+            }
+        }
+
+        String username = request.getParameter("username");
+
+        //TODO: get user by username here
+        System.out.println(username);
+
+    }
 }

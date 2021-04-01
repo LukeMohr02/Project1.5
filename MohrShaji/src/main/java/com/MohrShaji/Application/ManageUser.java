@@ -115,7 +115,7 @@ public class ManageUser {
     }
 
 
-    public void deleteUser(Integer userID) {
+    public User deleteUser(Integer userID) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 
@@ -124,13 +124,14 @@ public class ManageUser {
             User user = (User) session.get(User.class, userID);
             session.delete(user);
             tx.commit();
+            return user;
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         } finally {
             session.close();
         }
-
+        return null;
     }
 
     public User getByUserId(int id) {
