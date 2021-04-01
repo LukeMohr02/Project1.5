@@ -2,6 +2,7 @@ package com.MohrShaji.dao;
 
 import java.util.List;
 
+@Deprecated
 public interface GenericDao <T> {
 	List<T> getList();
 	T getById(int id);

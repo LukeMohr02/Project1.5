@@ -22,6 +22,8 @@ import org.hibernate.Transaction;
  * Purpose of this Dao is to send/retrieve info about a reimbursement
  * to/from the database. It then returns the composed Reimbursement Object.
  */
+
+@Deprecated
 public class UserDao implements GenericDao <User> {
 	private static SessionFactory factory;
 	private static final Logger LOGGER = Logger.getLogger(UserDao.class);
@@ -30,7 +32,7 @@ public class UserDao implements GenericDao <User> {
 		return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
 						rs.getString(6), rs.getInt(7));
 	}
-	
+
 	@Override
 	public List<User> getList() {
 		Session session = factory.openSession();
@@ -61,12 +63,12 @@ public class UserDao implements GenericDao <User> {
 
 		return null;
 	}
-	
+
 	@Override
 	public List<User> getByUserId(int id) {
 		return null;
 	}
-	
+
 	@Override
 	public User getByUsername(String username) {
 
@@ -108,6 +110,6 @@ public class UserDao implements GenericDao <User> {
 		}finally {
 			session.close();
 		}
-		
+
 	}
 }

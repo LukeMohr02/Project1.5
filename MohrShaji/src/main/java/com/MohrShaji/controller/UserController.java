@@ -85,10 +85,7 @@ public class UserController {
             return;
         }
 
-//        try {
-            //TODO: this
-//            mu.getByUserId(userIdInt);
-//        }
+        mu.updateUser(userIdInt, username);
     }
 
     public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
