@@ -39,9 +39,10 @@ public class UserController {
         response.setContentType("application/json");
         List<User> users = mu.listUsers();
 
+        System.out.println("List of all users:\n\n");
+
         for (User u : users) {
-            response.getWriter().println("List of all users:\n\n" +
-                    new Gson().toJson(u));
+            response.getWriter().println(new Gson().toJson(u));
         }
     }
 
