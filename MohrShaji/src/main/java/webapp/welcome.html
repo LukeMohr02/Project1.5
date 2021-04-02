@@ -1,7 +1,86 @@
+
+
 <html>
+    <script>
+        function userCreate() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var firstname = document.getElementById("firstname").value;
+            var lastname = document.getElementById("lastname").value;
+            var email = document.getElementById("email").value;
+            var role_id = document.getElementById("role_id").value;
+
+            window.location.href=
+                "user/create?username=" + username +
+                "&password=" + password +
+                "&firstname=" + firstname +
+                "&lastname=" + lastname +
+                "&email=" + email +
+                "&role_id=" + role_id;
+        }
+
+        function userList() {
+            window.location.href="user/list";
+        }
+
+        function userUpdate() {
+            var id = document.getElementById("id").value;
+            var username = document.getElementById("new_username").value;
+
+            window.location.href=
+                "user/update?id=" + id +
+                "&username=" + username;
+        }
+    </script>
 
     <body>
-        <h1>Welcome to tomcat</h1>
+        <h1>Welcome to Project 1.5 (MohrShaji)</h1>
+
+        <p>User:
+            <p>&nbsp&nbsp&nbsp<a onclick="userCreate()">Create user</a>
+            <form>
+            <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspUsername</small>
+            <input type="text" name="name" id="username"/> </br>
+            <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspPassword&nbsp</small>
+            <input type="text" name="name" id="password"/> </br>
+            <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspFirst name</small>
+            <input type="text" name="name" id="firstname"/> </br>
+            <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspLast name</small>
+            <input type="text" name="name" id="lastname"/> </br>
+            <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEmail&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</small>
+            <input type="text" name="name" id="email"/> </br>
+            <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspRole Id&nbsp&nbsp&nbsp&nbsp</small>
+            <input type="text" name="name" id="role_id"/> </br>
+            </form>
+            </p>
+
+            <p>&nbsp&nbsp&nbsp<a onclick="userList()">List users</a>
+
+            </p>
+
+            <p>&nbsp&nbsp&nbsp<a onclick="userCreate()">Update user</a>
+            <form>
+                <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspId&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</small>
+                <input type="text" name="name" id="id"/> </br>
+                <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspUsername&nbsp</small>
+                <input type="text" name="name" id="new_username"/> </br>
+                <small>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspFirst name</small>
+            </form>
+            </p>
+
+            <p>&nbsp&nbsp&nbsp<a href="user/delete">delete user</a></p>
+        </p>
+
+        <br/>
+
+        <p>Reimbursement:
+            <p>&nbsp&nbsp&nbsp<a href="reimbursement/create">create reimbursement</a></p>
+            <p>&nbsp&nbsp&nbsp<a href="reimbursement/list">list reimbursements</a></p>
+            <p>&nbsp&nbsp&nbsp<a href="reimbursement/create">create reimbursement</a></p>
+            <p>&nbsp&nbsp&nbsp<a href="reimbursement/delete">delete reimbursement</a></p>
+
+        </p>
+
     </body>
 
 </html>
