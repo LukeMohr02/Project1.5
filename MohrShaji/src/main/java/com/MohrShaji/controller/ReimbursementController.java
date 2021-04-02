@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -140,8 +139,10 @@ public class ReimbursementController {
         response.setContentType("application/json");
         String id = request.getParameter("id");
         String amount = request.getParameter("amount");
+        String resolver = request.getParameter("resolver");
         int idInt;
         float amountFloat;
+        int resolverInt;
 
         if (id == null) {
             response.getWriter().write("Please enter an 'id' as an integer.");
@@ -150,6 +151,11 @@ public class ReimbursementController {
 
         if (amount == null) {
             response.getWriter().write("Please enter an 'amount' as a float.");
+            return;
+        }
+
+        if (resolver == null) {
+            response.getWriter().write("Please enter a 'resolver' as an integer.");
             return;
         }
 
@@ -167,8 +173,15 @@ public class ReimbursementController {
             return;
         }
 
+        try {
+            resolverInt = Integer.parseInt(resolver);
+        } catch (NumberFormatException e) {
+            response.getWriter().write("Invalid 'resolver' input, please enter an integer.\n");
+            return;
+        }
 
-        rs.updateReimbursement(idInt, amountFloat);
+
+        rs.updateReimbursement(idInt, amountFloat, resolverInt);
     }
 
     public void deleteReimbursement(HttpServletRequest request, HttpServletResponse response) throws IOException {

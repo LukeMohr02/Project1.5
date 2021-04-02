@@ -61,7 +61,7 @@ public class ReimbursementManager {
         return reimbursements;
     }
 
-    public Reimbursement updateReimbursement(Integer id, float amount) {
+    public Reimbursement updateReimbursement(Integer id, float amount, int resolver) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 
@@ -69,6 +69,7 @@ public class ReimbursementManager {
             tx = session.beginTransaction();
             Reimbursement reimbursement = (Reimbursement) session.get(Reimbursement.class, id);
             reimbursement.setAmount(amount);
+            reimbursement.setResolver(resolver);
             session.update(reimbursement);
             tx.commit();
             return reimbursement;

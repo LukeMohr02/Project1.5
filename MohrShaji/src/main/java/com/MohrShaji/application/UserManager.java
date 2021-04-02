@@ -4,6 +4,7 @@ package com.MohrShaji.application;
 import java.util.List;
 
 import com.MohrShaji.util.HibernateUtil;
+import com.MohrShaji.model.Reimbursement;
 import com.MohrShaji.model.User;
 import org.hibernate.*;
 import org.hibernate.boot.Metadata;
@@ -23,8 +24,8 @@ public class UserManager {
 
         Session session = factory.openSession();
         Transaction t = session.beginTransaction();
-
-
+        Reimbursement re = new Reimbursement();
+        re.setResolver(user_id);
         User user = new User();
         user.setUser_id(user_id);
         user.setUsername(username);
