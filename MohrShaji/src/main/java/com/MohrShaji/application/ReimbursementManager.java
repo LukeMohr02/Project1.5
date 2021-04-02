@@ -116,7 +116,7 @@ public class ReimbursementManager {
                 session.close();
             }
         }
-        System.out.println(reimbursement);
+
         return reimbursement;
 
     }

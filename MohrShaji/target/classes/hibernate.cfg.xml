@@ -21,6 +21,7 @@
 
 
         <mapping class="com.MohrShaji.model.User" />
+        <mapping class="com.MohrShaji.model.Reimbursement" />
 
     </session-factory>
 </hibernate-configuration>
