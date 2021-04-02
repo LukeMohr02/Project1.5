@@ -1,4 +1,4 @@
-package com.MohrShaji.Util;
+package com.MohrShaji.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;

@@ -3,7 +3,7 @@ package com.MohrShaji.application;
 
 import java.util.List;
 
-import com.MohrShaji.Util.HibernateUtil;
+import com.MohrShaji.util.HibernateUtil;
 import com.MohrShaji.model.User;
 import org.hibernate.*;
 import org.hibernate.boot.Metadata;
@@ -17,10 +17,6 @@ public class UserManager {
     static StandardServiceRegistry ssr = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
     static Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
     static SessionFactory factory = meta.getSessionFactoryBuilder().build();
-
-    public User createUser(String username, String password, String firstname, String lastname, String email, int role_id) {
-        return createUser(0, username, password, firstname, lastname, email, role_id);
-    }
 
     public User createUser(int user_id, String username, String password, String firstname, String lastname, String email, int role_id) {
 
