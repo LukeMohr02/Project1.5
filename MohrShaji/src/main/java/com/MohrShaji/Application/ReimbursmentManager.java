@@ -64,6 +64,9 @@ public class ReimbursmentManager {
             Reimbursement re = (Reimbursement) iterator.next();
             System.out.println("Reimbursement ID: " + re.getId());
             System.out.println("Amount: " + re.getAmount());
+            System.out.println("Resolver: " + re.getResolver());
+            System.out.println("--------------");
+            System.out.println();
         }
         tx.commit();
 
@@ -72,7 +75,7 @@ public class ReimbursmentManager {
 
     }
 
-    public void updateReimbursement(Integer id, int amount) {
+    public void updateReimbursement(Integer id, int amount,int resolver) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 
@@ -80,6 +83,7 @@ public class ReimbursmentManager {
             tx = session.beginTransaction();
             Reimbursement reimbursement = (Reimbursement) session.get(Reimbursement.class, id);
             reimbursement.setAmount(amount);
+            reimbursement.setResolver(resolver);
             session.update(reimbursement);
             tx.commit();
         } catch (HibernateException e) {

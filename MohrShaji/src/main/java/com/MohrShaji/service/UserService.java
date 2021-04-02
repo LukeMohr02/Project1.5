@@ -1,3 +1,5 @@
+/*
+
 package com.MohrShaji.service;
 
 import java.math.BigInteger;
@@ -7,27 +9,27 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.MohrShaji.dao.UserDao;
+import com.MohrShaji.Application.ManageUser;
 import com.MohrShaji.model.User;
 
 public class UserService {
-	private UserDao ud;
+	private ManageUser mu;
 	private static final Logger LOGGER = Logger.getLogger(UserService.class);
 	
 	public UserService() {
-		ud = new UserDao();
+		mu = new ManageUser();
 	}
 	
 	public List<User> fetchAllUsers() {
-		return ud.getList();
+		return mu.listUsers();
 	}
 	
 	public User getUserById(int id) {
-		return ud.getById(id);
+		return mu.getByUserId(id);
 	}
 	
 	public User getUserByUsername(String username) {
-		User u = ud.getByUsername(username);
+		User u = mu.getByUsername(username);
 		if (u != null) {
 			u.setPassword(""); //Remove the hashed password for security reasons.
 			LOGGER.trace("Password info removed from username " + username + ".");
@@ -37,7 +39,7 @@ public class UserService {
 	}
 	
 	public User getUserByLogin(String user, String pass) {
-		User u = ud.getByUsername(user);
+		User u = mu.getByUsername(user);
 		
 		if(u != null) {
 		String full = user + pass + "salt";
@@ -67,3 +69,5 @@ public class UserService {
 		return null;
 	}
 }
+*/
+

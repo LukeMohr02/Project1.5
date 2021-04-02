@@ -1,11 +1,15 @@
 package com.MohrShaji.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "hibernateuser")
 public class User {
-	@Id @GeneratedValue
+	@Id
 	@Column(name = "id")
 	private int user_id;
 	@Column(name = "username")
@@ -20,7 +24,16 @@ public class User {
 	private String email;
 	@Column(name = "role_id")
 	private int role_id;
-	
+
+	@OneToMany
+	@JoinColumn(name = "resolver",referencedColumnName = "id")
+	private List<Reimbursement> reimbursements;
+
+	@OneToMany
+	@JoinColumn(name = "author",referencedColumnName = "id")
+	private List<Reimbursement> author;
+
+
 	public User() {
 		//No-arg constructor
 	}

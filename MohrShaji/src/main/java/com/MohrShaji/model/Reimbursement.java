@@ -1,18 +1,40 @@
 package com.MohrShaji.model;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
-
+@Entity
+@Table(name = "reimbursement")
 public class Reimbursement {
+	@Id
+	@Column(name = "id")
 	private int id;
+	@Column(name = "amount")
 	private float amount;
+	@Column(name = "submitted")
 	private Timestamp submitted;
+	@Column(name = "resolved")
 	private Timestamp resolved;
+	@Column(name = "description")
 	private String description;
+	@Column(name = "author")
 	private int author;
+	@Column(name = "resolver")
 	private int resolver;
+	@Column(name = "status_id")
 	private int status_id;
+	@Column(name = "type_id")
 	private int type_id;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "resolver",insertable = false,updatable = false, referencedColumnName = "id")
+	private User user;
+
+	@ManyToOne
+	@JoinColumn(name = "author",insertable = false,updatable = false, referencedColumnName = "id")
+	private User authors;
+
+
+
 	public Reimbursement() {
 		//No-arg constructor
 	}
