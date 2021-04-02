@@ -1,8 +1,13 @@
 package com.MohrShaji.model;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Entity
+@Table(name = "reimbursement")
 public class Reimbursement {
+	@Id
+	@GeneratedValue
 	private int id;
 	private float amount;
 	private Timestamp submitted;

@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.MohrShaji.dao.UserDao;
 import com.MohrShaji.model.User;
 
+@Deprecated
 public class UserService {
 	private UserDao ud;
 	private static final Logger LOGGER = Logger.getLogger(UserService.class);
