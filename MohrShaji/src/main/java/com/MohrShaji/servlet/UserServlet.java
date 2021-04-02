@@ -1,9 +1,7 @@
 package com.MohrShaji.servlet;
 
-import com.MohrShaji.Application.ManageUser;
+import com.MohrShaji.application.UserManager;
 import com.MohrShaji.controller.UserController;
-import com.MohrShaji.server.Request;
-import com.MohrShaji.server.Response;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +14,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserController uc = new UserController(new ManageUser());
+        UserController uc = new UserController(new UserManager());
         String urlEnd = request.getRequestURI().replaceFirst(".*/user/", "");
 
         switch(urlEnd) {

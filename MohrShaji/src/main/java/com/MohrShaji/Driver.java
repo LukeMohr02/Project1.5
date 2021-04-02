@@ -1,18 +1,13 @@
 package com.MohrShaji;
 
-import com.MohrShaji.Application.ManageUser;
-import com.MohrShaji.Application.ReimbursementManager;
-import com.MohrShaji.model.Reimbursement;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import com.MohrShaji.application.UserManager;
+import com.MohrShaji.application.ReimbursementManager;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class Driver {
-    static ManageUser mu = new ManageUser();
+    static UserManager mu = new UserManager();
     static ReimbursementManager rm = new ReimbursementManager();
     public static void main(String[] args) {
 
