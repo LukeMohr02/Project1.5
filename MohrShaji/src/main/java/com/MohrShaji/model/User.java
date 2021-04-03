@@ -19,11 +19,11 @@ public class User {
 	private String email;
 	private int role_id;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "resolver",referencedColumnName = "id")
 	private List<Reimbursement> reimbursements;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "author",referencedColumnName = "id")
 	private List<Reimbursement> author;
 
