@@ -25,14 +25,25 @@ public class User {
 	@Column(name = "role_id")
 	private int role_id;
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "resolver",referencedColumnName = "id")
 	private List<Reimbursement> reimbursements;
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "author",referencedColumnName = "id")
 	private List<Reimbursement> author;
 
+	@Transient
+	private List<Integer> reimbursementIds;
+
+	@Transient
+	private List<Integer> authorIds;
+
+
+	{
+		this.reimbursementIds = new ArrayList<>();
+		this.authorIds = new ArrayList<>();
+	}
 
 	public User() {
 		//No-arg constructor
@@ -103,6 +114,42 @@ public class User {
 
 	public void setRole_id(int role_id) {
 		this.role_id = role_id;
+	}
+
+	public void setReimbursements(List<Reimbursement> reimbursements) {
+		this.reimbursements = reimbursements;
+	}
+
+	public void setAuthor(List<Reimbursement> author) {
+		this.author = author;
+	}
+
+	public List<Integer> getReimbursementIds() {
+		return reimbursementIds;
+	}
+
+	public void setReimbursementIds(List<Integer> reimbursementIds) {
+		this.reimbursementIds = reimbursementIds;
+	}
+
+	public List<Integer> getAuthorIds() {
+		return authorIds;
+	}
+
+	public void setAuthorIds(List<Integer> authorIds) {
+		this.authorIds = authorIds;
+	}
+
+	public void prepForGson() {
+		for (Reimbursement r : reimbursements) {
+			reimbursementIds.add(r.getId());
+		}
+		reimbursements = null;
+
+		for (Reimbursement r : author) {
+			authorIds.add(r.getId());
+		}
+		author = null;
 	}
 
 	@Override

@@ -2,22 +2,26 @@ import com.MohrShaji.application.ReimbursementManager;
 import com.MohrShaji.application.UserManager;
 import com.MohrShaji.model.Reimbursement;
 import com.MohrShaji.model.User;
+import com.google.gson.Gson;
+import org.mockito.internal.verification.Times;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class Driver {
 
     static UserManager um = new UserManager();
 
     public static void main(String[] args) {
-        User u = new User(247,"resTest","pasword","test","res","res@gmail.com",79);
-        Reimbursement re = new Reimbursement();
+//        User u = new User(247,"resTest","pasword","test","res","res@gmail.com",79);
+//        Reimbursement re = new Reimbursement();
         ReimbursementManager rm = new ReimbursementManager();
-        Timestamp instant= Timestamp.from(Instant.now());
+//        Timestamp instant= Timestamp.from(Instant.now());
 
         //mu.createUser(4,"resTest","pasword","test","res","res@gmail.com",79);
-      rm.createReimbursement(79,3000, instant,instant,"gee",0,0,3,5);
+//      rm.createReimbursement(79,3000, instant,instant,"gee",0,0,3,5);
        // rm.listReimbursment();
        //rm.updateReimbursement(84,3000,4);
         //rm.deleteReimbursement(2);
@@ -38,6 +42,14 @@ public class Driver {
 
        // mu.getByUserId(245);
         //mu.getByUsername("asdasdl");
+
+        UserManager um = new UserManager();
+//        rm.createReimbursement(3, 200, Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now()), " ", 3, 3, 4, 3);
+        Reimbursement r = rm.getById(3);
+
+        r.prepForGson();
+
+        System.out.println(new Gson().toJson(r));
 
     }
 }

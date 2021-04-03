@@ -3,6 +3,7 @@ package com.MohrShaji.controller;
 import com.MohrShaji.model.Reimbursement;
 import com.MohrShaji.application.ReimbursementManager;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +30,15 @@ public class ReimbursementController {
 
         response.getWriter().println("List of all reimbursements:\n\n");
 
-        for (Reimbursement u : reimbursements) {
-            response.getWriter().println(new Gson().toJson(u));
+        for (Reimbursement r : reimbursements) {
+
+            try {
+                r.prepForGson();
+            } catch (NullPointerException e) {
+                continue;
+            }
+
+            response.getWriter().println(new GsonBuilder().setPrettyPrinting().create().toJson(r));
         }
     }
 
@@ -131,7 +139,7 @@ public class ReimbursementController {
         }
 
         response.getWriter().println("Created new reimbursement:\n\n" +
-            new Gson().toJson(
+            new GsonBuilder().setPrettyPrinting().create().toJson(
             rs.createReimbursement(idInt, amountFloat, submittedTS, resolvedTS, description, authorInt, resolverInt, statusIdInt, typeIdInt)));
     }
 
@@ -197,9 +205,11 @@ public class ReimbursementController {
         }
 
         try {
+            Reimbursement r = rs.deleteReimbursement(idInt);
+            r.prepForGson();
+
             response.getWriter().println("Deleted reimbursement:\n\n" +
-                new Gson().toJson(
-                rs.deleteReimbursement(idInt)));
+                new GsonBuilder().setPrettyPrinting().create().toJson(r));
         } catch(IllegalArgumentException e) {
             response.getWriter().println("Invalid 'id', please enter a valid integer id");
         }
@@ -210,31 +220,42 @@ public class ReimbursementController {
         String id = request.getParameter("id");
         String userId = request.getParameter("user_id");
 
-        int idInt;
-        int userIdInt;
+        int idInt = 0;
+        int userIdInt = 0;
 
         if (id != null) {
 
             try {
                 idInt = Integer.parseInt(id);
+                Reimbursement r = rs.getById(idInt);
+                r.prepForGson();
 
                 response.getWriter().println("Found reimbursement:\n\n" +
-                    new Gson().toJson(
-                    rs.getById(idInt)));
+                    new GsonBuilder().setPrettyPrinting().create().toJson(r));
             } catch (NumberFormatException e) {
                 response.getWriter().write("Invalid 'id' input, please enter an integer.\n");
+            } catch (NullPointerException e) {
+                response.getWriter().write("No user with 'id' "+idInt+" in the database.");
             }
 
         } else if (userId != null) {
 
             try {
                 userIdInt = Integer.parseInt(userId);
+                List<Reimbursement> reimbursements = rs.getByUserId(userIdInt);
 
-                response.getWriter().println("Found reimbursement:\n\n" +
-                    new Gson().toJson(
-                    rs.getByUserId(userIdInt)));
+                response.getWriter().println("Found reimbursements:\n\n");
+
+                for (Reimbursement r : reimbursements) {
+                    r.prepForGson();
+
+                    response.getWriter().println(new GsonBuilder().setPrettyPrinting().create().toJson(r));
+                }
+
             } catch (NumberFormatException e) {
                 response.getWriter().write("Invalid 'user_id' input, please enter an integer.\n");
+            } catch (NullPointerException e) {
+                response.getWriter().write("No user with 'user_id' "+userIdInt+" in the database.");
             }
 
         } else {

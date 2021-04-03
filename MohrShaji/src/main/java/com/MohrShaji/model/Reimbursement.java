@@ -2,6 +2,9 @@ package com.MohrShaji.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "reimbursement")
 public class Reimbursement {
@@ -32,8 +35,6 @@ public class Reimbursement {
 	@ManyToOne
 	@JoinColumn(name = "author",insertable = false,updatable = false, referencedColumnName = "id")
 	private User authors;
-
-
 
 	public Reimbursement() {
 		//No-arg constructor
@@ -122,6 +123,19 @@ public class Reimbursement {
 
 	public void setType_id(int type_id) {
 		this.type_id = type_id;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setAuthors(User authors) {
+		this.authors = authors;
+	}
+
+	public void prepForGson() {
+		user = null;
+		authors = null;
 	}
 
 	@Override
