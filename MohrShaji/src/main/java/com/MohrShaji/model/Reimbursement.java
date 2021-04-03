@@ -8,24 +8,16 @@ import java.util.List;
 @Entity
 @Table(name = "reimbursement")
 public class Reimbursement {
-	@Id
-	@Column(name = "id")
+	@Id @GeneratedValue
+	@Column
 	private int id;
-	@Column(name = "amount")
 	private float amount;
-	@Column(name = "submitted")
 	private Timestamp submitted;
-	@Column(name = "resolved")
 	private Timestamp resolved;
-	@Column(name = "description")
 	private String description;
-	@Column(name = "author")
 	private int author;
-	@Column(name = "resolver")
 	private int resolver;
-	@Column(name = "status_id")
 	private int status_id;
-	@Column(name = "type_id")
 	private int type_id;
 
 	@ManyToOne

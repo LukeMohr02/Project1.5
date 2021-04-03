@@ -2,7 +2,6 @@ package com.MohrShaji.controller;
 
 import com.MohrShaji.application.UserManager;
 import com.MohrShaji.model.User;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,19 +11,19 @@ import java.util.List;
 
 public class UserController {
 
-    UserManager us;
+    UserManager um;
 
     public UserController() {
 
     }
 
-    public UserController(UserManager us) {
-        this.us = us;
+    public UserController(UserManager um) {
+        this.um = um;
     }
 
     public void getAllUsers(HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        List<User> users = us.listUsers();
+        List<User> users = um.listUsers();
 
         response.getWriter().println("List of all users:\n\n");
 
@@ -36,13 +35,12 @@ public class UserController {
                 continue;
             }
 
-            response.getWriter().println(new GsonBuilder().setPrettyPrinting().create().toJson(u));
+            response.getWriter().println(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(u));
         }
     }
 
     public void createUser(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, IOException {
         response.setContentType("application/json");
-        String id = request.getParameter("id");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String firstName = request.getParameter("firstname");
@@ -50,19 +48,7 @@ public class UserController {
         String email = request.getParameter("email");
         String roleId = request.getParameter("role_id");
 
-        int idInt;
         int roleIdInt = 0;
-
-        if (id == null) {
-            id = "0";
-        }
-
-        try {
-            idInt = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            response.getWriter().write("Invalid 'id' input, please enter an integer.\n");
-            return;
-        }
 
         if (roleId != null) {
             try {
@@ -73,11 +59,11 @@ public class UserController {
             }
         }
 
-        User user = us.createUser(idInt, username, password, firstName, lastName, email, roleIdInt);
+        User user = um.createUser(username, password, firstName, lastName, email, roleIdInt);
         user.prepForGson();
 
         response.getWriter().println("Created new user:\n\n" +
-            new GsonBuilder().setPrettyPrinting().create().toJson(user));
+            new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(user));
     }
 
     public void updateUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -98,7 +84,15 @@ public class UserController {
             return;
         }
 
-        us.updateUser(userIdInt, username);
+        try {
+            User user = um.updateUser(userIdInt, username);
+            user.prepForGson();
+
+            response.getWriter().println("Updated user:\n\n" +
+                    new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(user));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            response.getWriter().write("No user with 'id' "+userIdInt+" in the database.");
+        }
     }
 
     public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -108,12 +102,12 @@ public class UserController {
 
         try {
             userIdInt = Integer.parseInt(userId);
-            User user = us.deleteUser(userIdInt);
+            User user = um.deleteUser(userIdInt);
             user.prepForGson();
 
             try {
                 response.getWriter().println("Deleted user:\n\n" +
-                        new GsonBuilder().setPrettyPrinting().create().toJson(user));
+                    new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(user));
             } catch(IllegalArgumentException e) {
                 response.getWriter().println("Invalid 'id', please enter a valid integer id");
             }
@@ -121,7 +115,7 @@ public class UserController {
         } catch (NumberFormatException e) {
             response.getWriter().println("Invalid 'id', please enter a valid integer id");
             return;
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             response.getWriter().write("No user with 'id' "+userIdInt+" in the database.");
         }
 
@@ -137,11 +131,11 @@ public class UserController {
 
             try {
                 userIdInt = Integer.parseInt(userId);
-                User user = us.getByUserId(userIdInt);
+                User user = um.getByUserId(userIdInt);
                 user.prepForGson();
 
                 response.getWriter().println("Found user:\n\n" +
-                    new GsonBuilder().setPrettyPrinting().create().toJson(user));
+                    new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(user));
 
             } catch (NumberFormatException e) {
                 response.getWriter().write("Invalid 'id' input, please enter an integer.\n");
@@ -150,11 +144,11 @@ public class UserController {
             }
 
         } else if (username != null) {
-                User user = us.getByUsername(username);
+                User user = um.getByUsername(username);
                 user.prepForGson();
 
             response.getWriter().println("Found user:\n\n" +
-                new GsonBuilder().setPrettyPrinting().create().toJson(user));
+                new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(user));
 
         } else {
             response.getWriter().write("Please specify either an 'id' or a 'username'.");

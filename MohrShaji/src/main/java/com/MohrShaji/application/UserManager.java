@@ -4,7 +4,6 @@ package com.MohrShaji.application;
 import java.util.List;
 
 import com.MohrShaji.util.HibernateUtil;
-import com.MohrShaji.model.Reimbursement;
 import com.MohrShaji.model.User;
 import org.hibernate.*;
 import org.hibernate.boot.Metadata;
@@ -19,15 +18,12 @@ public class UserManager {
     static Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
     static SessionFactory factory = meta.getSessionFactoryBuilder().build();
 
-    public User createUser(int user_id, String username, String password, String firstname, String lastname, String email, int role_id) {
+    public User createUser(String username, String password, String firstname, String lastname, String email, int role_id) {
 
 
         Session session = factory.openSession();
         Transaction t = session.beginTransaction();
-        Reimbursement re = new Reimbursement();
-        re.setResolver(user_id);
         User user = new User();
-        user.setUser_id(user_id);
         user.setUsername(username);
         user.setPassword(password);
         user.setFirstname(firstname);
@@ -83,7 +79,7 @@ public class UserManager {
         return users;
     }
 
-    public void updateUser(Integer userID, String username) {
+    public User updateUser(Integer userID, String username) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 
@@ -93,11 +89,13 @@ public class UserManager {
             user.setUsername(username);
             session.update(user);
             tx.commit();
+            return user;
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
         } finally {
             session.close();
         }
+        return null;
     }
 
 

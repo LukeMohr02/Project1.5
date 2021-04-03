@@ -9,27 +9,21 @@ import java.util.Set;
 @Entity
 @Table(name = "hibernateuser")
 public class User {
-	@Id
+	@Id @GeneratedValue
 	@Column(name = "id")
 	private int user_id;
-	@Column(name = "username")
 	private String username;
-	@Column(name = "password")
 	private String password;
-	@Column(name = "first_name")
 	private String firstname;
-	@Column(name = "last_name")
 	private String lastname;
-	@Column(name = "email")
 	private String email;
-	@Column(name = "role_id")
 	private int role_id;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "resolver",referencedColumnName = "id")
 	private List<Reimbursement> reimbursements;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "author",referencedColumnName = "id")
 	private List<Reimbursement> author;
 
@@ -49,9 +43,8 @@ public class User {
 		//No-arg constructor
 	}
 	
-	public User(int user_id, String username, String password, String firstname, String lastname, String email,
+	public User(String username, String password, String firstname, String lastname, String email,
 			int role_id) {
-		this.user_id = user_id;
 		this.username = username;
 		this.password = password;
 		this.firstname = firstname;
@@ -141,15 +134,19 @@ public class User {
 	}
 
 	public void prepForGson() {
-		for (Reimbursement r : reimbursements) {
-			reimbursementIds.add(r.getId());
+		if (reimbursements != null) {
+			for (Reimbursement r : reimbursements) {
+				reimbursementIds.add(r.getId());
+			}
+			reimbursements = null;
 		}
-		reimbursements = null;
 
-		for (Reimbursement r : author) {
-			authorIds.add(r.getId());
+		if (author != null) {
+			for (Reimbursement r : author) {
+				authorIds.add(r.getId());
+			}
+			author = null;
 		}
-		author = null;
 	}
 
 	@Override

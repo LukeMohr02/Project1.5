@@ -2,9 +2,9 @@ package com.MohrShaji.controller;
 
 import com.MohrShaji.model.Reimbursement;
 import com.MohrShaji.application.ReimbursementManager;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,19 +14,19 @@ import java.util.List;
 
 public class ReimbursementController {
 
-    ReimbursementManager rs;
+    ReimbursementManager rm;
 
     public ReimbursementController() {
 
     }
 
-    public ReimbursementController(ReimbursementManager rs) {
-        this.rs = rs;
+    public ReimbursementController(ReimbursementManager rm) {
+        this.rm = rm;
     }
 
     public void getAllReimbursements(HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        List<Reimbursement> reimbursements = rs.listReimbursement();
+        List<Reimbursement> reimbursements = rm.listReimbursement();
 
         response.getWriter().println("List of all reimbursements:\n\n");
 
@@ -38,14 +38,13 @@ public class ReimbursementController {
                 continue;
             }
 
-            response.getWriter().println(new GsonBuilder().setPrettyPrinting().create().toJson(r));
+            response.getWriter().println(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(r));
         }
     }
 
     public void createReimbursement(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, IOException {
         response.setContentType("application/json");
 
-        String id = request.getParameter("id");
         String amount = request.getParameter("amount");
         String submitted = request.getParameter("submitted");
         String resolved = request.getParameter("resolved");
@@ -55,7 +54,6 @@ public class ReimbursementController {
         String statusId = request.getParameter("status_id");
         String typeId = request.getParameter("type_id");
 
-        int idInt;
         float amountFloat = 0;
         Timestamp submittedTS = Timestamp.valueOf(LocalDateTime.now());
         Timestamp resolvedTS = Timestamp.valueOf(LocalDateTime.now());
@@ -64,18 +62,7 @@ public class ReimbursementController {
         int statusIdInt = 0;
         int typeIdInt = 0;
 
-        if (id == null) {
-            id = "0";
-        }
-
-        try {
-            idInt = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            response.getWriter().write("Invalid 'id' input, please enter an integer.\n");
-            return;
-        }
-
-        if (amount != null) {
+        if (amount != null && !amount.equals("")) {
             try {
                 amountFloat = Float.parseFloat(amount);
             } catch (NumberFormatException e) {
@@ -84,22 +71,26 @@ public class ReimbursementController {
             }
         }
 
-        if (submitted != null) {
+        if (submitted != null && !submitted.equals("")) {
             try {
                 submittedTS = Timestamp.valueOf(submitted);
             } catch (IllegalArgumentException e) {
                 response.getWriter().println("Invalid 'submitted' timestamp, please enter a valid timestamp string.");
                 return;
             }
+        } else {
+            submittedTS = Timestamp.valueOf(LocalDateTime.now());
         }
 
-        if (resolved != null) {
+        if (resolved != null && !resolved.equals("")) {
             try {
                 resolvedTS = Timestamp.valueOf(resolved);
             } catch (IllegalArgumentException e) {
                 response.getWriter().println("Invalid 'resolved' timestamp, please enter a valid timestamp string.");
                 return;
             }
+        } else {
+            resolvedTS = Timestamp.valueOf(LocalDateTime.now());
         }
 
         if (author != null) {
@@ -138,9 +129,13 @@ public class ReimbursementController {
             }
         }
 
-        response.getWriter().println("Created new reimbursement:\n\n" +
-            new GsonBuilder().setPrettyPrinting().create().toJson(
-            rs.createReimbursement(idInt, amountFloat, submittedTS, resolvedTS, description, authorInt, resolverInt, statusIdInt, typeIdInt)));
+        try {
+            response.getWriter().println("Created new reimbursement:\n\n" +
+                new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(
+                rm.createReimbursement(amountFloat, submittedTS, resolvedTS, description, authorInt, resolverInt, statusIdInt, typeIdInt)));
+        } catch (PersistenceException e) {
+            response.getWriter().println("'author' and/or 'resolver' values do not point to valid user IDs.");
+        }
     }
 
     public void updateReimbursement(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -188,30 +183,40 @@ public class ReimbursementController {
             return;
         }
 
+        try {
+            Reimbursement r = rm.updateReimbursement(idInt, amountFloat, resolverInt);
+            r.prepForGson();
 
-        rs.updateReimbursement(idInt, amountFloat, resolverInt);
+            response.getWriter().println("Updated reimbursement:\n\n" +
+                new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(r));
+        } catch (NumberFormatException | NullPointerException e) {
+            response.getWriter().write("No reimbursement with 'id' "+idInt+" in the database.");
+        } catch (PersistenceException e) {
+            response.getWriter().println("No resolver with 'id' "+resolverInt+" in the database.");
+        }
     }
 
     public void deleteReimbursement(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         String id = request.getParameter("id");
-        int idInt;
+        int idInt = 0;
 
         try {
             idInt = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            response.getWriter().println("Invalid 'id', please enter a valid integer id");
-            return;
-        }
-
-        try {
-            Reimbursement r = rs.deleteReimbursement(idInt);
+            Reimbursement r = rm.deleteReimbursement(idInt);
             r.prepForGson();
 
-            response.getWriter().println("Deleted reimbursement:\n\n" +
-                new GsonBuilder().setPrettyPrinting().create().toJson(r));
-        } catch(IllegalArgumentException e) {
+            try {
+                response.getWriter().println("Deleted reimbursement:\n\n" +
+                    new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(r));
+            } catch(IllegalArgumentException e) {
+                response.getWriter().println("Invalid 'id', please enter a valid integer id");
+            }
+
+        } catch (NumberFormatException e) {
             response.getWriter().println("Invalid 'id', please enter a valid integer id");
+        } catch (NullPointerException | IllegalArgumentException e) {
+            response.getWriter().write("No reimbursement with 'id' "+idInt+" in the database.");
         }
     }
 
@@ -227,29 +232,33 @@ public class ReimbursementController {
 
             try {
                 idInt = Integer.parseInt(id);
-                Reimbursement r = rs.getById(idInt);
+                Reimbursement r = rm.getById(idInt);
                 r.prepForGson();
 
                 response.getWriter().println("Found reimbursement:\n\n" +
-                    new GsonBuilder().setPrettyPrinting().create().toJson(r));
+                    new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(r));
             } catch (NumberFormatException e) {
                 response.getWriter().write("Invalid 'id' input, please enter an integer.\n");
             } catch (NullPointerException e) {
-                response.getWriter().write("No user with 'id' "+idInt+" in the database.");
+                response.getWriter().write("No reimbursement with 'id' "+idInt+" in the database.");
             }
 
         } else if (userId != null) {
 
             try {
                 userIdInt = Integer.parseInt(userId);
-                List<Reimbursement> reimbursements = rs.getByUserId(userIdInt);
+                List<Reimbursement> reimbursements = rm.getByUserId(userIdInt);
 
-                response.getWriter().println("Found reimbursements:\n\n");
+                if (reimbursements != null && reimbursements.size() > 0) {
+                    response.getWriter().println("Found reimbursements:\n\n");
 
-                for (Reimbursement r : reimbursements) {
-                    r.prepForGson();
+                    for (Reimbursement r : reimbursements) {
+                        r.prepForGson();
 
-                    response.getWriter().println(new GsonBuilder().setPrettyPrinting().create().toJson(r));
+                        response.getWriter().println(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(r));
+                    }
+                } else {
+                    response.getWriter().println("No reimbursements found for 'user_id' "+userIdInt);
                 }
 
             } catch (NumberFormatException e) {

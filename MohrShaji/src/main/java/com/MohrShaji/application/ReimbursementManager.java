@@ -20,14 +20,13 @@ public class ReimbursementManager {
     static Metadata meta = new MetadataSources(ssr).getMetadataBuilder().build();
     static SessionFactory factory = meta.getSessionFactoryBuilder().build();
 
-    public Reimbursement createReimbursement(int id, float amount, Timestamp submitted, Timestamp resolved, String description, int author,
+    public Reimbursement createReimbursement(float amount, Timestamp submitted, Timestamp resolved, String description, int author,
                                    int resolver, int status_id, int type_id) {
         Session session = factory.openSession();
         Transaction tx = session.beginTransaction();
 
 
         Reimbursement reimbursement = new Reimbursement();
-        reimbursement.setId(id);
         reimbursement.setAmount(amount);
         reimbursement.setSubmitted(submitted);
         reimbursement.setResolved(resolved);
