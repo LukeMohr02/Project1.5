@@ -26,7 +26,7 @@ public class ReimbursementController {
 
     public void getAllReimbursements(HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        List<Reimbursement> reimbursements = rm.listReimbursement();
+        List<Reimbursement> reimbursements = rm.listReimbursements();
 
         response.getWriter().println("List of all reimbursements:\n\n");
 

@@ -44,7 +44,7 @@ public class ReimbursementManager {
     }
 
 
-    public List<Reimbursement> listReimbursement() {
+    public List<Reimbursement> listReimbursements() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 

@@ -62,17 +62,9 @@ public class UserManager {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
 
-
         tx = session.beginTransaction();
         List users = session.createQuery("from User").list();
-//        for (Iterator iterator = users.iterator();
-//             iterator.hasNext(); ) {
-//            User user = (User) iterator.next();
-//            System.out.println("First name: " + user.getFirstname());
-//            System.out.println("Last name: " + user.getLastname());
-//        }
         tx.commit();
-
 
         session.close();
 
@@ -137,6 +129,7 @@ public class UserManager {
 
     }
 
+    @Deprecated
     public User getByUsername(String username) {
         Session session = null;
 
