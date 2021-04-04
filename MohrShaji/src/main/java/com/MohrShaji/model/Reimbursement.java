@@ -20,11 +20,11 @@ public class Reimbursement {
 	private int status_id;
 	private int type_id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "resolver",insertable = false,updatable = false, referencedColumnName = "id")
 	private User user;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "author",insertable = false,updatable = false, referencedColumnName = "id")
 	private User authors;
 

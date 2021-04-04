@@ -5,19 +5,6 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         version="2.5">
 
-<!-- add into your tomcatDir/conf/com.MohrShaji.server.xml-->
-
-<!--<Resource name="jdbc/postgres" type="javax.sql.DataSource" global="jdbc/postgres" username="enterprise_associate" password="password"-->
-<!--              driverClassName="org.postgresql.TestRunner" url="jdbc:postgresql://postgresql-class.cks98gmxels6.us-west-1.rds.amazonaws.com:5432/enterprise?currentSchema=enterprise_study"-->
-<!--              validationQuery="select floor(1.5)"-->
-<!--              maxActive="6"-->
-<!--              maxIdle="1">-->
-
-<!--      and add this into your tomcatDir/conf/context.xml-->
-
-<!--      	<ResourceLink name="jdbc/psql" global="jdbc/postgres" type="javax.sql.DataSource" />-->
-
-
     <resource-ref>
         <res-ref-name>jdbc/psql</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
@@ -33,11 +20,5 @@
         <param-name>global</param-name>
         <param-value>params</param-value>
     </context-param>
-
-<!--    <servlet>-->
-<!--        <servlet-name>default</servlet-name>-->
-<!--        <servlet-class>com.MohrShaji.com.MohrShaji.servlet.UserListServlettServlet</servlet-class>-->
-<!--        <load-on-startup>0</load-on-startup>-->
-<!--    </servlet>-->
 
 </web-app>
